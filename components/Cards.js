@@ -5,20 +5,25 @@
 // You will be creating a card for each article in the response.
 // This won't be as easy as just iterating over an array though.
 
-const axiosPromise = axios.get(" https://lambda-times-api.herokuapp.com/articles")
-                            .then((res) =>{
-                                const newArticles = articleCards(res.data.articles)
-                                    cardsContainer.appendChild(newArticles);  
-                                
-                                
-                                console.log(res.data.articles);
-                            })
-                            .catch((err)=>{
-                                debugger
-                                console.log(err, "Error")
-                            })
+const cardsContainer = document.querySelector('.cards-container');
 
-console.log(axiosPromise);
+axios.get(" https://lambda-times-api.herokuapp.com/articles")
+    .then((res) =>{
+    const newArticles = res.data.articles;
+    let topicsData = Object.keys(newArticles);
+    for(let i =0; i< topicsData.length; i++){
+        newArticles[topicsData[i]].forEach((item) =>{
+            let newTopic = articleCards(item);
+            cardsContainer.appendChild(newTopic);
+        })
+    }  
+    })
+    .catch((err)=>{
+    debugger
+    console.log(err, "Error")
+})
+
+
 
 
 // Write a function that takes a single article object and returns the following markup:
@@ -59,21 +64,22 @@ function articleCards  (article){
 
     
 
-    imgDiv.appendChild(authorImg);
-    imgDiv.appendChild(authorImg);
+    divCard.appendChild(headlineDiv);
+    divCard.appendChild(authorDiv)
     
+    authorDiv.appendChild(imgDiv);
 
-    
-    authorDiv.appendChild(imgDiv)
-    
+    imgDiv.appendChild(authorImg);
     authorDiv.appendChild(authorSpan);
 
-    headlineDiv.appendChild(authorDiv)
+    divCard.addEventListener('click', (e) =>{
+        console.log(article.headline);
+    })
 
-    divCard.appendChild(headlineDiv);
+    
+
 
     return divCard;
 
 }
 
-const cardsContainer = document.querySelector('.cards-container');
